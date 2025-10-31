@@ -1,0 +1,20 @@
+run = "node server.js"
+entrypoint = "server.js"
+hidden = [".config", "package-lock.json"]
+
+[nix]
+channel = "stable-23_11"
+
+[deployment]
+run = ["node", "server.js"]
+deploymentTarget = "cloudrun"
+
+[[ports]]
+localPort = 3000
+externalPort = 80
+
+[languages.javascript]
+pattern = "**/*.{js,jsx,ts,tsx,json}"
+
+[languages.javascript.languageServer]
+start = "typescript-language-server --stdio"

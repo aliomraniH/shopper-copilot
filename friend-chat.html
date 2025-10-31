@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Friend's Chat View - Shopper Copilot</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: #e5ddd5;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header - looks like messaging app */
+    .chat-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .back-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .contact-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    .contact-info {
+      flex: 1;
+    }
+
+    .contact-name {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .contact-status {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    /* Platform selector */
+    .platform-selector {
+      background: white;
+      padding: 10px 15px;
+      display: flex;
+      gap: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .platform-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border: 2px solid #e9ecef;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .platform-btn:hover {
+      border-color: #667eea;
+    }
+
+    .platform-btn.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-color: #667eea;
+    }
+
+    /* Chat Messages */
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      background-image:
+        linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255,255,255,0.05) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.05) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.05) 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    }
+
+    .message-wrapper {
+      display: flex;
+      margin-bottom: 16px;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message-wrapper.sent {
+      justify-content: flex-end;
+    }
+
+    .message-bubble {
+      max-width: 75%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      position: relative;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .message-wrapper.received .message-bubble {
+      background: white;
+      border-bottom-left-radius: 4px;
+    }
+
+    .message-wrapper.sent .message-bubble {
+      background: #dcf8c6;
+      border-bottom-right-radius: 4px;
+    }
+
+    /* Telegram style */
+    .telegram .message-wrapper.sent .message-bubble {
+      background: #d3e8ff;
+    }
+
+    /* Messenger style */
+    .messenger .message-wrapper.sent .message-bubble {
+      background: #0084ff;
+      color: white;
+    }
+
+    .message-text {
+      font-size: 14px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .message-meta {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      margin-top: 4px;
+      font-size: 11px;
+      color: #667781;
+    }
+
+    .message-wrapper.sent .message-meta {
+      color: #667781;
+    }
+
+    .check-marks {
+      color: #53bdeb;
+      font-weight: bold;
+    }
+
+    /* Link preview card */
+    .link-preview {
+      background: #f0f2f5;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .link-preview:hover {
+      background: #e4e6eb;
+    }
+
+    .link-preview-title {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 4px;
+      color: #050505;
+    }
+
+    .link-preview-description {
+      font-size: 12px;
+      color: #65676b;
+      line-height: 1.4;
+    }
+
+    .link-preview-url {
+      font-size: 11px;
+      color: #667eea;
+      margin-top: 6px;
+    }
+
+    /* Input Area */
+    .chat-input {
+      background: white;
+      padding: 12px 15px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      border-top: 1px solid #ddd;
+    }
+
+    .input-field {
+      flex: 1;
+      padding: 10px 16px;
+      border: 1px solid #ddd;
+      border-radius: 24px;
+      font-size: 14px;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .input-field:focus {
+      border-color: #667eea;
+    }
+
+    .send-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+    }
+
+    .send-button:hover {
+      transform: scale(1.05);
+    }
+
+    .send-button:active {
+      transform: scale(0.95);
+    }
+
+    /* Typing indicator */
+    .typing-indicator {
+      display: none;
+      padding: 10px 14px;
+      background: white;
+      border-radius: 12px;
+      border-bottom-left-radius: 4px;
+      width: fit-content;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .typing-indicator.show {
+      display: block;
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #90949c;
+      animation: typing 1.4s infinite;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typing {
+      0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.7;
+      }
+      30% {
+        transform: translateY(-10px);
+        opacity: 1;
+      }
+    }
+
+    .demo-badge {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 12px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      font-size: 13px;
+      color: #667eea;
+      font-weight: 600;
+      z-index: 1000;
+      animation: slideInRight 0.5s ease;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+      }
+      to {
+        transform: translateX(0);
+      }
+    }
+  </style>
+</head>
+<body class="whatsapp">
+  <div class="demo-badge">
+    👋 Friend's View Demo
+  </div>
+
+  <!-- Chat Header -->
+  <div class="chat-header">
+    <button class="back-btn" onclick="window.close()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </button>
+    <div class="contact-avatar">SC</div>
+    <div class="contact-info">
+      <div class="contact-name">Shopper Copilot</div>
+      <div class="contact-status">via Your Friend</div>
+    </div>
+  </div>
+
+  <!-- Platform Selector -->
+  <div class="platform-selector">
+    <button class="platform-btn active" onclick="switchPlatform('whatsapp')">
+      WhatsApp
+    </button>
+    <button class="platform-btn" onclick="switchPlatform('telegram')">
+      Telegram
+    </button>
+    <button class="platform-btn" onclick="switchPlatform('messenger')">
+      Messenger
+    </button>
+  </div>
+
+  <!-- Chat Messages -->
+  <div class="chat-messages" id="chatMessages">
+    <!-- Initial message -->
+    <div class="message-wrapper received">
+      <div class="message-bubble">
+        <div class="message-text">Hey! Check out this page I found 🛍️</div>
+        <div class="message-meta">
+          <span>2:30 PM</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message with link preview -->
+    <div class="message-wrapper received">
+      <div class="message-bubble">
+        <div class="message-text">iPhone 15 Pro with titanium design is amazing!</div>
+        <div class="link-preview" onclick="alert('In production, this would open the actual link!')">
+          <div class="link-preview-title">🍎 Apple - iPhone 15 Pro</div>
+          <div class="link-preview-description">
+            Apple introduces iPhone 15 Pro with titanium design, A17 Pro chip, and Action button. Features advanced camera system with 5x optical zoom...
+          </div>
+          <div class="link-preview-url">🔗 apple.com/iphone-15-pro</div>
+        </div>
+        <div class="message-meta">
+          <span>2:31 PM</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Typing indicator -->
+    <div class="typing-indicator" id="typingIndicator">
+      <div class="typing-dots">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Input -->
+  <div class="chat-input">
+    <input
+      type="text"
+      class="input-field"
+      id="messageInput"
+      placeholder="Type a message..."
+      onkeypress="if(event.key==='Enter') sendMessage()"
+    >
+    <button class="send-button" onclick="sendMessage()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M22 2L11 13"></path>
+        <path d="M22 2L15 22L11 13L2 9L22 2z"></path>
+      </svg>
+    </button>
+  </div>
+
+  <script>
+    // Switch messaging platform style
+    function switchPlatform(platform) {
+      document.body.className = platform;
+      document.querySelectorAll('.platform-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+
+    // Send message
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const message = input.value.trim();
+      if (!message) return;
+
+      const messagesContainer = document.getElementById('chatMessages');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'message-wrapper sent';
+      messageDiv.innerHTML = `
+        <div class="message-bubble">
+          <div class="message-text">${escapeHtml(message)}</div>
+          <div class="message-meta">
+            <span>${getCurrentTime()}</span>
+            <span class="check-marks">✓✓</span>
+          </div>
+        </div>
+      `;
+
+      messagesContainer.appendChild(messageDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      input.value = '';
+
+      // Show typing indicator
+      document.getElementById('typingIndicator').classList.add('show');
+
+      // Simulate friend response
+      setTimeout(() => {
+        document.getElementById('typingIndicator').classList.remove('show');
+        addReceivedMessage('Thanks for your thoughts! What do you think about the price?');
+      }, 2000);
+    }
+
+    function addReceivedMessage(text) {
+      const messagesContainer = document.getElementById('chatMessages');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'message-wrapper received';
+      messageDiv.innerHTML = `
+        <div class="message-bubble">
+          <div class="message-text">${escapeHtml(text)}</div>
+          <div class="message-meta">
+            <span>${getCurrentTime()}</span>
+          </div>
+        </div>
+      `;
+      messagesContainer.appendChild(messageDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function getCurrentTime() {
+      const now = new Date();
+      return now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Listen for messages from parent window (Shopper Copilot)
+    window.addEventListener('message', (event) => {
+      if (event.data.type === 'newMessage') {
+        // Show typing first
+        document.getElementById('typingIndicator').classList.add('show');
+
+        setTimeout(() => {
+          document.getElementById('typingIndicator').classList.remove('show');
+          addReceivedMessage(event.data.message);
+        }, 1500);
+      }
+    });
+
+    // Auto-scroll to bottom on load
+    setTimeout(() => {
+      document.getElementById('chatMessages').scrollTop = 999999;
+    }, 100);
+
+    // Sample auto messages
+    setTimeout(() => {
+      addReceivedMessage('The AI assistant helped me find this. Pretty cool, right? 🤖');
+    }, 3000);
+  </script>
+</body>
+</html>

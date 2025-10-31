@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopper Copilot - AI-Powered Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .ai-banner {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      text-align: center;
+      border-radius: 16px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .ai-banner h1 {
+      font-size: 42px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 15px;
+    }
+
+    .ai-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      margin: 10px 5px;
+    }
+
+    .setup-card {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .setup-card h2 {
+      color: #667eea;
+      margin-bottom: 20px;
+      font-size: 28px;
+    }
+
+    .setup-card h3 {
+      color: #495057;
+      margin: 25px 0 15px 0;
+      font-size: 20px;
+    }
+
+    .setup-card p {
+      color: #6c757d;
+      line-height: 1.8;
+      margin-bottom: 15px;
+    }
+
+    .code-block {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 20px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      overflow-x: auto;
+      margin: 15px 0;
+    }
+
+    .code-block .comment {
+      color: #6a9955;
+    }
+
+    .code-block .command {
+      color: #4ec9b0;
+    }
+
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      margin: 10px 0;
+    }
+
+    .status-indicator.success {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-indicator.warning {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-indicator.error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    .feature-item {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 4px solid #667eea;
+    }
+
+    .feature-item h4 {
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+
+    .feature-item p {
+      font-size: 14px;
+      color: #6c757d;
+    }
+
+    .demo-content {
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      max-width: 1200px;
+      margin: 20px auto;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .demo-content h1 {
+      font-size: 48px;
+      color: #212529;
+      margin-bottom: 20px;
+    }
+
+    .demo-content p {
+      font-size: 18px;
+      color: #6c757d;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.2s;
+      margin: 10px 5px;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+  </style>
+
+  <link rel="stylesheet" href="widget.css">
+</head>
+<body>
+  <!-- AI Banner -->
+  <div class="ai-banner">
+    <h1>🤖 Shopper Copilot with Real AI</h1>
+    <p style="font-size: 18px; color: #6c757d; margin-bottom: 15px;">
+      Powered by OpenAI GPT for Actual Summaries & Smart Responses
+    </p>
+    <span class="ai-badge">✨ OpenAI Integration</span>
+    <span class="ai-badge">🔒 Secure Backend</span>
+    <span class="ai-badge">⚡ Real-time Chat</span>
+  </div>
+
+  <!-- Setup Instructions -->
+  <div class="setup-card">
+    <h2>🚀 Quick Start Guide</h2>
+
+    <h3>1. Install Dependencies</h3>
+    <p>First, install the required Node.js packages:</p>
+    <div class="code-block">
+<span class="comment"># Navigate to project directory</span>
+cd shopper-copilot
+
+<span class="comment"># Install dependencies</span>
+<span class="command">npm install</span>
+    </div>
+
+    <h3>2. Start the Backend Server</h3>
+    <p>The backend server handles OpenAI API calls securely:</p>
+    <div class="code-block">
+<span class="comment"># Start the server (runs on port 3000)</span>
+<span class="command">npm start</span>
+
+<span class="comment"># You should see:</span>
+╔════════════════════════════════════════════════════╗
+║        🛍️  Shopper Copilot Backend Server         ║
+║        Status: Running                             ║
+║        Port: 3000                                  ║
+╚════════════════════════════════════════════════════╝
+    </div>
+
+    <h3>3. Test the AI Features</h3>
+    <p>Try these AI-powered features in the chat widget (bottom-right):</p>
+
+    <div class="feature-grid">
+      <div class="feature-item">
+        <h4>💬 Smart Chat</h4>
+        <p>Ask questions about products and get intelligent responses from GPT</p>
+      </div>
+
+      <div class="feature-item">
+        <h4>📝 AI Summary</h4>
+        <p>Click "AI Summary" to get a comprehensive page analysis</p>
+      </div>
+
+      <div class="feature-item">
+        <h4>🔗 Link Analysis</h4>
+        <p>AI identifies and ranks the most important links</p>
+      </div>
+
+      <div class="feature-item">
+        <h4>📤 Smart Sharing</h4>
+        <p>AI generates friendly messages to share with friends</p>
+      </div>
+    </div>
+
+    <h3>✅ Server Status</h3>
+    <div id="serverStatus">
+      <div class="status-indicator warning">
+        <span>⏳</span>
+        <span>Checking backend connection...</span>
+      </div>
+    </div>
+
+    <h3>🔑 API Key Configuration</h3>
+    <p>Your OpenAI API key is securely stored in <code>.env</code> file (never in client code!):</p>
+    <div class="code-block">
+<span class="comment"># .env file (automatically configured)</span>
+OPENAI_API_KEY=sk-proj-HR6l...
+PORT=3000
+NODE_ENV=development
+    </div>
+
+    <h3>💡 Tips</h3>
+    <ul style="color: #6c757d; line-height: 2; margin-left: 20px;">
+      <li>Keep the backend server running in a separate terminal</li>
+      <li>The widget will show "Online - AI Ready" when connected</li>
+      <li>If offline, check that server is running on port 3000</li>
+      <li>API usage is tracked - check your OpenAI dashboard</li>
+    </ul>
+  </div>
+
+  <!-- Demo Content -->
+  <div class="demo-content">
+    <h1>iPhone 15 Pro - Titanium Design</h1>
+    <p>
+      Introducing the all-new iPhone 15 Pro with aerospace-grade titanium design.
+      Features the powerful A17 Pro chip with breakthrough GPU performance,
+      advanced camera system with 5x optical zoom, and the new Action button
+      for instant access to your favorite features.
+    </p>
+
+    <p>
+      <strong>Starting at $999</strong> with trade-in. Available in four stunning
+      finishes: Natural Titanium, Blue Titanium, White Titanium, and Black Titanium.
+    </p>
+
+    <a href="#" class="cta-button">Buy iPhone 15 Pro</a>
+    <a href="#" class="cta-button">Learn More</a>
+    <a href="#" class="cta-button">Compare Models</a>
+
+    <h2 style="margin-top: 40px; color: #667eea;">Key Features</h2>
+
+    <ul style="line-height: 2; color: #495057; margin-left: 20px;">
+      <li>🏆 Titanium design - Strongest and lightest Pro models ever</li>
+      <li>⚡ A17 Pro chip - Console-quality gaming and pro workflows</li>
+      <li>📸 Advanced camera - 5x Telephoto, 48MP Main, and Photonic Engine</li>
+      <li>🎮 Action button - Customizable shortcut to favorite features</li>
+      <li>🔌 USB-C with USB 3 - Fast data transfer up to 10Gb/s</li>
+      <li>🔋 All-day battery - Up to 29 hours video playback</li>
+    </ul>
+  </div>
+
+  <!-- Widget -->
+  <div id="shopper-copilot-root"></div>
+
+  <!-- Load test data (fallback) -->
+  <script src="test-data.js"></script>
+
+  <!-- Load AI-powered widget -->
+  <script src="widget-ai.js"></script>
+
+  <!-- Check server status -->
+  <script>
+    async function checkServerStatus() {
+      const statusDiv = document.getElementById('serverStatus');
+
+      try {
+        const response = await fetch('http://localhost:3000/health');
+        if (response.ok) {
+          const data = await response.json();
+          statusDiv.innerHTML = `
+            <div class="status-indicator success">
+              <span>✅</span>
+              <span>Backend Connected - ${data.message}</span>
+            </div>
+          `;
+        } else {
+          throw new Error('Server error');
+        }
+      } catch (error) {
+        statusDiv.innerHTML = `
+          <div class="status-indicator error">
+            <span>❌</span>
+            <span>Backend Not Running - Please run "npm start" in terminal</span>
+          </div>
+          <p style="color: #991b1b; margin-top: 10px; font-size: 14px;">
+            Make sure to run <code>npm install</code> first, then <code>npm start</code> to start the backend server.
+          </p>
+        `;
+      }
+    }
+
+    // Check status on load
+    setTimeout(checkServerStatus, 500);
+
+    // Recheck every 5 seconds
+    setInterval(checkServerStatus, 5000);
+  </script>
+</body>
+</html>

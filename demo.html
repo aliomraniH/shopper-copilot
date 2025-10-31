@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopper Copilot - Demo Page</title>
+  <style>
+    /* Demo page styling */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+    }
+
+    .demo-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .demo-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .demo-header h1 {
+      font-size: 48px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+    }
+
+    .demo-header p {
+      font-size: 18px;
+      color: #6c757d;
+    }
+
+    .demo-content {
+      margin-bottom: 40px;
+    }
+
+    .demo-section {
+      margin-bottom: 30px;
+    }
+
+    .demo-section h2 {
+      color: #667eea;
+      font-size: 28px;
+      margin-bottom: 15px;
+    }
+
+    .demo-section p {
+      line-height: 1.8;
+      color: #495057;
+      font-size: 16px;
+    }
+
+    .demo-section ul {
+      line-height: 2;
+      color: #495057;
+    }
+
+    .demo-links {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .demo-link {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: transform 0.2s;
+    }
+
+    .demo-link:hover {
+      transform: translateY(-2px);
+    }
+
+    .instructions {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 4px solid #667eea;
+      margin-top: 30px;
+    }
+
+    .instructions h3 {
+      margin-top: 0;
+      color: #667eea;
+    }
+
+    .instructions code {
+      background: #e9ecef;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+    }
+  </style>
+
+  <!-- Include the widget CSS -->
+  <link rel="stylesheet" href="widget.css">
+</head>
+<body>
+  <!-- Demo Page Content -->
+  <div class="demo-container">
+    <div class="demo-header">
+      <h1>🛍️ Shopper Copilot</h1>
+      <p>AI-Powered Page Summarizer & Smart Assistant</p>
+    </div>
+
+    <div class="demo-content">
+      <div class="demo-section">
+        <h2>Welcome to the Demo!</h2>
+        <p>
+          This is a demonstration page showing the Shopper Copilot browser extension in action.
+          The floating chat widget on the bottom-right corner is what users will see on any webpage
+          they visit after installing the extension.
+        </p>
+      </div>
+
+      <div class="demo-section">
+        <h2>Key Features</h2>
+        <ul>
+          <li><strong>AI-Powered Summarization:</strong> Instantly summarize any webpage you're viewing</li>
+          <li><strong>Smart Chat Interface:</strong> Ask questions about the page content</li>
+          <li><strong>Link Extraction:</strong> Automatically extract and organize important links</li>
+          <li><strong>Friend Sharing:</strong> Share summaries with friends via WhatsApp, Telegram, or Messenger</li>
+          <li><strong>Real-time Responses:</strong> Get instant AI responses and see friend replies</li>
+        </ul>
+      </div>
+
+      <div class="demo-section">
+        <h2>Try These Sample Links</h2>
+        <p>These are example links that would be extracted from a real page:</p>
+        <div class="demo-links">
+          <a href="#" class="demo-link">Product Page</a>
+          <a href="#" class="demo-link">Documentation</a>
+          <a href="#" class="demo-link">Tutorial</a>
+          <a href="#" class="demo-link">Support</a>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h2>How It Works</h2>
+        <p>
+          1. <strong>Click the chat widget</strong> in the bottom-right corner<br>
+          2. <strong>Explore the three tabs:</strong> Chat, Summary, and Friends<br>
+          3. <strong>Try the quick actions:</strong> Summarize, Links, Share<br>
+          4. <strong>Type a message</strong> to chat with the AI assistant<br>
+          5. <strong>Share content</strong> with your friends via messaging apps
+        </p>
+      </div>
+
+      <div class="instructions">
+        <h3>📋 Installation Instructions</h3>
+        <p><strong>To install this as a Chrome Extension:</strong></p>
+        <ol>
+          <li>Open Chrome and navigate to <code>chrome://extensions/</code></li>
+          <li>Enable "Developer mode" using the toggle in the top-right</li>
+          <li>Click "Load unpacked" button</li>
+          <li>Select the <code>shopper-copilot</code> folder</li>
+          <li>The extension will be installed and ready to use!</li>
+        </ol>
+        <p style="margin-top: 15px;">
+          <strong>Note:</strong> This demo shows the widget with mock data. In production, it will integrate with
+          LLM APIs (like OpenAI or Anthropic) for real summarization and messaging APIs for friend communication.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Widget will be injected here -->
+  <div id="shopper-copilot-root">
+    <!-- Floating Chat Widget -->
+    <div id="copilot-widget" class="widget-container">
+      <!-- Widget Header -->
+      <div class="widget-header">
+        <div class="header-left">
+          <div class="avatar">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"></path>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+              <circle cx="12" cy="17" r="1"></circle>
+            </svg>
+          </div>
+          <div class="header-info">
+            <h3>Shopper Copilot</h3>
+            <span class="status-text">Online</span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="icon-btn" id="refreshBtn" title="Refresh">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M23 4v6h-6"></path>
+              <path d="M1 20v-6h6"></path>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+          </button>
+          <button class="icon-btn" id="minimizeBtn" title="Minimize">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+          <button class="icon-btn" id="closeBtn" title="Close">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M18 6L6 18"></path>
+              <path d="M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="tab-navigation">
+        <button class="tab-btn active" data-tab="chat">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          Chat
+        </button>
+        <button class="tab-btn" data-tab="summary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <path d="M14 2v6h6"></path>
+            <path d="M16 13H8"></path>
+            <path d="M16 17H8"></path>
+            <path d="M10 9H8"></path>
+          </svg>
+          Summary
+        </button>
+        <button class="tab-btn" data-tab="friends">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          Friends
+        </button>
+      </div>
+
+      <!-- Chat Tab Content -->
+      <div class="tab-content active" id="chatTab">
+        <div class="messages-container" id="messagesContainer">
+          <div class="message bot-message">
+            <div class="message-avatar bot-avatar">AI</div>
+            <div class="message-content">
+              <p>Hello! I'm your Shopper Copilot. I can help you:</p>
+              <ul>
+                <li>Summarize the current page</li>
+                <li>Extract important links and information</li>
+                <li>Share insights with your friends</li>
+              </ul>
+              <p>How can I assist you today?</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-container">
+          <textarea
+            id="messageInput"
+            class="message-input"
+            placeholder="Ask me anything about this page..."
+            rows="1"
+          ></textarea>
+          <button class="send-btn" id="sendBtn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M22 2L11 13"></path>
+              <path d="M22 2L15 22L11 13L2 9L22 2z"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="quick-actions-bar">
+          <button class="quick-action-btn" data-action="summarize">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            Summarize
+          </button>
+          <button class="quick-action-btn" data-action="links">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+            Links
+          </button>
+          <button class="quick-action-btn" data-action="share">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <path d="M8.59 13.51l6.83 3.98"></path>
+              <path d="M15.41 6.51l-6.82 3.98"></path>
+            </svg>
+            Share
+          </button>
+        </div>
+      </div>
+
+      <!-- Summary Tab Content -->
+      <div class="tab-content" id="summaryTab">
+        <div class="summary-container">
+          <div class="summary-header">
+            <h3>Page Summary</h3>
+            <button class="action-btn-small" id="generateSummary">Generate Summary</button>
+          </div>
+
+          <div class="summary-section">
+            <h4>Title</h4>
+            <p id="pageTitle" class="summary-text">Click "Generate Summary" to analyze this page</p>
+          </div>
+
+          <div class="summary-section">
+            <h4>Key Points</h4>
+            <ul id="keyPoints" class="summary-list">
+              <li class="placeholder">No summary generated yet</li>
+            </ul>
+          </div>
+
+          <div class="summary-section">
+            <h4>Important Links</h4>
+            <div id="importantLinks" class="links-list">
+              <p class="placeholder">No links extracted yet</p>
+            </div>
+          </div>
+
+          <div class="summary-actions">
+            <button class="action-btn-secondary" id="copySummary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy
+            </button>
+            <button class="action-btn-secondary" id="shareSummary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <path d="M8.59 13.51l6.83 3.98"></path>
+                <path d="M15.41 6.51l-6.82 3.98"></path>
+              </svg>
+              Share with Friend
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Friends Tab Content -->
+      <div class="tab-content" id="friendsTab">
+        <div class="friends-container">
+          <div class="friends-header">
+            <h3>Share with Friends</h3>
+            <button class="action-btn-small" id="addFriend">+ Add Friend</button>
+          </div>
+
+          <div class="friends-list">
+            <div class="friend-item">
+              <div class="friend-avatar">JD</div>
+              <div class="friend-info">
+                <div class="friend-name">John Doe</div>
+                <div class="friend-platform">WhatsApp</div>
+              </div>
+              <button class="send-to-friend-btn" data-friend="john">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M22 2L11 13"></path>
+                  <path d="M22 2L15 22L11 13L2 9L22 2z"></path>
+                </svg>
+              </button>
+            </div>
+
+            <div class="friend-item">
+              <div class="friend-avatar">SA</div>
+              <div class="friend-info">
+                <div class="friend-name">Sarah Anderson</div>
+                <div class="friend-platform">Telegram</div>
+              </div>
+              <button class="send-to-friend-btn" data-friend="sarah">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M22 2L11 13"></path>
+                  <path d="M22 2L15 22L11 13L2 9L22 2z"></path>
+                </svg>
+              </button>
+            </div>
+
+            <div class="friend-item">
+              <div class="friend-avatar">MJ</div>
+              <div class="friend-info">
+                <div class="friend-name">Mike Johnson</div>
+                <div class="friend-platform">Messenger</div>
+              </div>
+              <button class="send-to-friend-btn" data-friend="mike">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M22 2L11 13"></path>
+                  <path d="M22 2L15 22L11 13L2 9L22 2z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="message-preview">
+            <h4>Message Preview</h4>
+            <textarea
+              id="friendMessageInput"
+              class="friend-message-input"
+              placeholder="Customize the message to send to your friend..."
+            >Check out this page I found! Here's a quick summary...</textarea>
+            <button class="action-btn-primary" id="sendToSelected">Send to Friend</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Action Button (when widget is minimized) -->
+    <button id="copilot-fab" class="fab hidden">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+      <span class="notification-badge hidden" id="notificationBadge">0</span>
+    </button>
+  </div>
+
+  <!-- Include the widget JavaScript -->
+  <script src="widget.js"></script>
+</body>
+</html>

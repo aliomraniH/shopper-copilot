@@ -49,6 +49,28 @@ npm run test:ci
 
 ## 💻 Running Tests Locally
 
+### 0. Create .env File (REQUIRED FIRST TIME)
+
+**⚠️ If this is your first time running the project, you MUST create `.env` file:**
+
+```bash
+# Copy the template
+cp .env.example .env
+
+# Edit and add your OpenAI API key
+nano .env  # or code .env, or open .env
+```
+
+Your `.env` should contain:
+```env
+OPENAI_API_KEY=your-actual-api-key-here
+PORT=3000
+NODE_ENV=development
+ALLOWED_ORIGINS=http://localhost:8080,http://127.0.0.1:8080
+```
+
+Get API key from: https://platform.openai.com/api-keys
+
 ### 1. Start the Backend Server
 
 **Terminal 1:**
@@ -62,8 +84,12 @@ Wait for:
 ║        🛍️  Shopper Copilot Backend Server         ║
 ║        Status: Running                             ║
 ║        Port: 3000                                  ║
+║        OpenAI: ✓ Configured                        ║
 ╚════════════════════════════════════════════════════╝
 ```
+
+**If server crashes immediately with "OPENAI_API_KEY environment variable is missing":**
+- You forgot to create `.env` file - go back to step 0!
 
 ### 2. Run Tests
 
@@ -360,6 +386,21 @@ npm install
 ```
 
 ### Server Not Starting
+
+**Error: "OPENAI_API_KEY environment variable is missing"**
+
+```bash
+# Create .env file (you forgot this step!)
+cp .env.example .env
+
+# Edit and add your API key
+nano .env
+
+# Then start server
+npm start
+```
+
+**Error: Port already in use**
 
 ```bash
 # Kill existing process

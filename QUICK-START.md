@@ -10,6 +10,38 @@ git pull origin claude/javascript-chatbot-widget-011CUfkdPnaBnaSP8H9xJmz9
 npm install
 ```
 
+## 🔑 1.5. Create .env File (REQUIRED - 30 seconds)
+
+**⚠️ IMPORTANT:** The `.env` file is NOT in the repo (for security). You must create it:
+
+```bash
+# Copy the example template
+cp .env.example .env
+
+# Edit and add your OpenAI API key
+nano .env
+# OR
+code .env
+# OR
+open .env
+```
+
+Your `.env` file should contain:
+
+```env
+OPENAI_API_KEY=sk-proj-YOUR-ACTUAL-API-KEY-HERE
+PORT=3000
+NODE_ENV=development
+ALLOWED_ORIGINS=http://localhost:8080,http://127.0.0.1:8080
+```
+
+**Where to get your API key:** https://platform.openai.com/api-keys
+
+**Without this file, the server will crash with:**
+```
+OpenAIError: The OPENAI_API_KEY environment variable is missing or empty
+```
+
 ## 🧪 2. Run Tests Locally (1 minute)
 
 **Terminal 1 - Start Server:**

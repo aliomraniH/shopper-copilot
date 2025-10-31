@@ -48,13 +48,47 @@ shopper-copilot/
    cd shopper-copilot
    ```
 
-2. Load the extension in Chrome/Edge:
+2. **CRITICAL:** Create your `.env` file (required for backend):
+   ```bash
+   # Copy the template
+   cp .env.example .env
+
+   # Edit and add your OpenAI API key
+   nano .env
+   ```
+
+   Your `.env` should contain:
+   ```env
+   OPENAI_API_KEY=your-actual-api-key-here
+   PORT=3000
+   NODE_ENV=development
+   ALLOWED_ORIGINS=http://localhost:8080,http://127.0.0.1:8080
+   ```
+
+   **Get API key:** https://platform.openai.com/api-keys
+
+   **⚠️ Without this file, the backend server will crash with:**
+   ```
+   OpenAIError: The OPENAI_API_KEY environment variable is missing or empty
+   ```
+
+3. Install backend dependencies:
+   ```bash
+   npm install
+   ```
+
+4. Start the backend server:
+   ```bash
+   npm start
+   ```
+
+5. Load the extension in Chrome/Edge:
    - Open `chrome://extensions/` (or `edge://extensions/`)
    - Enable "Developer mode" (toggle in top-right)
    - Click "Load unpacked"
    - Select the `shopper-copilot` directory
 
-3. The extension icon should appear in your browser toolbar
+6. The extension icon should appear in your browser toolbar
 
 ### For Production
 

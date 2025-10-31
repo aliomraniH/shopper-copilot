@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopper Copilot</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <header class="popup-header">
+      <h1>Shopper Copilot</h1>
+      <p class="tagline">AI-Powered Page Insights</p>
+    </header>
+
+    <div class="status-section">
+      <div class="status-indicator">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">Ready</span>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <button class="action-btn primary" id="toggleWidget">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        Open Chat Widget
+      </button>
+
+      <button class="action-btn secondary" id="summarizePage">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+        Summarize This Page
+      </button>
+
+      <button class="action-btn secondary" id="extractLinks">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+        </svg>
+        Extract Links
+      </button>
+    </div>
+
+    <div class="settings-section">
+      <h3>Messaging Integration</h3>
+      <div class="integration-status">
+        <div class="integration-item">
+          <span>WhatsApp</span>
+          <span class="badge" id="whatsappStatus">Not Connected</span>
+        </div>
+        <div class="integration-item">
+          <span>Telegram</span>
+          <span class="badge" id="telegramStatus">Not Connected</span>
+        </div>
+        <div class="integration-item">
+          <span>Messenger</span>
+          <span class="badge" id="messengerStatus">Not Connected</span>
+        </div>
+      </div>
+      <button class="action-btn secondary" id="configureIntegrations">
+        Configure Integrations
+      </button>
+    </div>
+
+    <footer class="popup-footer">
+      <small>Version 1.0.0</small>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

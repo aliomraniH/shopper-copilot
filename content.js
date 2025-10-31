@@ -1,0 +1,343 @@
+// Content Script - Injects the widget into web pages
+
+(function() {
+  'use strict';
+
+  // Prevent multiple injections
+  if (window.shopperCopilotInjected) {
+    console.log('Shopper Copilot already injected');
+    return;
+  }
+  window.shopperCopilotInjected = true;
+
+  console.log('Shopper Copilot: Initializing...');
+
+  // Create and inject the widget HTML
+  function injectWidget() {
+    // Create container for the widget
+    const widgetContainer = document.createElement('div');
+    widgetContainer.id = 'shopper-copilot-root';
+    widgetContainer.innerHTML = `
+      <!-- Floating Chat Widget -->
+      <div id="copilot-widget" class="widget-container">
+        <!-- Widget Header -->
+        <div class="widget-header">
+          <div class="header-left">
+            <div class="avatar">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"></path>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                <circle cx="12" cy="17" r="1"></circle>
+              </svg>
+            </div>
+            <div class="header-info">
+              <h3>Shopper Copilot</h3>
+              <span class="status-text">Online</span>
+            </div>
+          </div>
+          <div class="header-actions">
+            <button class="icon-btn" id="refreshBtn" title="Refresh">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M23 4v6h-6"></path>
+                <path d="M1 20v-6h6"></path>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+              </svg>
+            </button>
+            <button class="icon-btn" id="minimizeBtn" title="Minimize">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <button class="icon-btn" id="closeBtn" title="Close">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M18 6L6 18"></path>
+                <path d="M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+          <button class="tab-btn active" data-tab="chat">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            Chat
+          </button>
+          <button class="tab-btn" data-tab="summary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <path d="M14 2v6h6"></path>
+              <path d="M16 13H8"></path>
+              <path d="M16 17H8"></path>
+              <path d="M10 9H8"></path>
+            </svg>
+            Summary
+          </button>
+          <button class="tab-btn" data-tab="friends">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            Friends
+          </button>
+        </div>
+
+        <!-- Chat Tab Content -->
+        <div class="tab-content active" id="chatTab">
+          <div class="messages-container" id="messagesContainer">
+            <div class="message bot-message">
+              <div class="message-avatar bot-avatar">AI</div>
+              <div class="message-content">
+                <p>Hello! I'm your Shopper Copilot. I can help you:</p>
+                <ul>
+                  <li>Summarize the current page</li>
+                  <li>Extract important links and information</li>
+                  <li>Share insights with your friends</li>
+                </ul>
+                <p>How can I assist you today?</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="input-container">
+            <textarea
+              id="messageInput"
+              class="message-input"
+              placeholder="Ask me anything about this page..."
+              rows="1"
+            ></textarea>
+            <button class="send-btn" id="sendBtn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M22 2L11 13"></path>
+                <path d="M22 2L15 22L11 13L2 9L22 2z"></path>
+              </svg>
+            </button>
+          </div>
+
+          <div class="quick-actions-bar">
+            <button class="quick-action-btn" data-action="summarize">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              </svg>
+              Summarize
+            </button>
+            <button class="quick-action-btn" data-action="links">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+              </svg>
+              Links
+            </button>
+            <button class="quick-action-btn" data-action="share">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <path d="M8.59 13.51l6.83 3.98"></path>
+                <path d="M15.41 6.51l-6.82 3.98"></path>
+              </svg>
+              Share
+            </button>
+          </div>
+        </div>
+
+        <!-- Summary Tab Content -->
+        <div class="tab-content" id="summaryTab">
+          <div class="summary-container">
+            <div class="summary-header">
+              <h3>Page Summary</h3>
+              <button class="action-btn-small" id="generateSummary">Generate Summary</button>
+            </div>
+
+            <div class="summary-section">
+              <h4>Title</h4>
+              <p id="pageTitle" class="summary-text">Click "Generate Summary" to analyze this page</p>
+            </div>
+
+            <div class="summary-section">
+              <h4>Key Points</h4>
+              <ul id="keyPoints" class="summary-list">
+                <li class="placeholder">No summary generated yet</li>
+              </ul>
+            </div>
+
+            <div class="summary-section">
+              <h4>Important Links</h4>
+              <div id="importantLinks" class="links-list">
+                <p class="placeholder">No links extracted yet</p>
+              </div>
+            </div>
+
+            <div class="summary-actions">
+              <button class="action-btn-secondary" id="copySummary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                Copy
+              </button>
+              <button class="action-btn-secondary" id="shareSummary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <circle cx="18" cy="5" r="3"></circle>
+                  <circle cx="6" cy="12" r="3"></circle>
+                  <circle cx="18" cy="19" r="3"></circle>
+                  <path d="M8.59 13.51l6.83 3.98"></path>
+                  <path d="M15.41 6.51l-6.82 3.98"></path>
+                </svg>
+                Share with Friend
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Friends Tab Content -->
+        <div class="tab-content" id="friendsTab">
+          <div class="friends-container">
+            <div class="friends-header">
+              <h3>Share with Friends</h3>
+              <button class="action-btn-small" id="addFriend">+ Add Friend</button>
+            </div>
+
+            <div class="friends-list">
+              <div class="friend-item">
+                <div class="friend-avatar">JD</div>
+                <div class="friend-info">
+                  <div class="friend-name">John Doe</div>
+                  <div class="friend-platform">WhatsApp</div>
+                </div>
+                <button class="send-to-friend-btn" data-friend="john">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M22 2L11 13"></path>
+                    <path d="M22 2L15 22L11 13L2 9L22 2z"></path>
+                  </svg>
+                </button>
+              </div>
+
+              <div class="friend-item">
+                <div class="friend-avatar">SA</div>
+                <div class="friend-info">
+                  <div class="friend-name">Sarah Anderson</div>
+                  <div class="friend-platform">Telegram</div>
+                </div>
+                <button class="send-to-friend-btn" data-friend="sarah">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M22 2L11 13"></path>
+                    <path d="M22 2L15 22L11 13L2 9L22 2z"></path>
+                  </svg>
+                </button>
+              </div>
+
+              <div class="friend-item">
+                <div class="friend-avatar">MJ</div>
+                <div class="friend-info">
+                  <div class="friend-name">Mike Johnson</div>
+                  <div class="friend-platform">Messenger</div>
+                </div>
+                <button class="send-to-friend-btn" data-friend="mike">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M22 2L11 13"></path>
+                    <path d="M22 2L15 22L11 13L2 9L22 2z"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="message-preview">
+              <h4>Message Preview</h4>
+              <textarea
+                id="friendMessageInput"
+                class="friend-message-input"
+                placeholder="Customize the message to send to your friend..."
+              >Check out this page I found! Here's a quick summary...</textarea>
+              <button class="action-btn-primary" id="sendToSelected">Send to Friend</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating Action Button (when widget is minimized) -->
+      <button id="copilot-fab" class="fab hidden">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <span class="notification-badge hidden" id="notificationBadge">0</span>
+      </button>
+    `;
+
+    document.body.appendChild(widgetContainer);
+    console.log('Shopper Copilot: Widget injected');
+  }
+
+  // Load and inject the widget script
+  function loadWidgetScript() {
+    const script = document.createElement('script');
+    script.src = chrome.runtime.getURL('widget.js');
+    script.onload = function() {
+      console.log('Shopper Copilot: Widget script loaded');
+    };
+    (document.head || document.documentElement).appendChild(script);
+  }
+
+  // Message listener for extension commands
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    console.log('Shopper Copilot: Received message', request);
+
+    switch (request.action) {
+      case 'toggleWidget':
+        const widget = document.getElementById('copilot-widget');
+        if (widget) {
+          if (widget.classList.contains('minimized')) {
+            widget.classList.remove('minimized');
+            document.getElementById('copilot-fab').classList.add('hidden');
+          } else {
+            widget.classList.add('minimized');
+            document.getElementById('copilot-fab').classList.remove('hidden');
+          }
+          sendResponse({ success: true, visible: !widget.classList.contains('minimized') });
+        }
+        break;
+
+      case 'summarizePage':
+        // Trigger summary generation
+        const generateBtn = document.getElementById('generateSummary');
+        if (generateBtn) {
+          generateBtn.click();
+          sendResponse({ success: true });
+        }
+        break;
+
+      case 'extractLinks':
+        // Extract links from page
+        const links = Array.from(document.querySelectorAll('a[href]'))
+          .map(a => ({ url: a.href, text: a.textContent.trim() }))
+          .filter(link => link.text && link.url.startsWith('http'))
+          .slice(0, 10);
+
+        sendResponse({ success: true, links: links });
+        break;
+
+      default:
+        sendResponse({ success: false, error: 'Unknown action' });
+    }
+
+    return true; // Keep the message channel open for async response
+  });
+
+  // Initialize the widget
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      injectWidget();
+      loadWidgetScript();
+    });
+  } else {
+    injectWidget();
+    loadWidgetScript();
+  }
+
+  console.log('Shopper Copilot: Content script initialized');
+})();

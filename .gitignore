@@ -37,3 +37,4 @@ temp/
 # Logs
 logs/
 *.log
+coverage/

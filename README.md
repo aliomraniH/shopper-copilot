@@ -34,8 +34,15 @@ shopper-copilot/
 ├── widget.js             # Widget functionality
 ├── content.js            # Content script for page injection
 ├── background.js         # Background service worker
+├── server.js             # OpenAI backend server
+├── server-gemini.js      # Google Gemini backend server
+├── server-drive.js       # Google Drive integration server ✨ NEW
+├── drive-integration.js  # Google Drive API module ✨ NEW
+├── test-drive-fetch.js   # Drive folder fetch test script ✨ NEW
 ├── icons/                # Extension icons
-└── README.md            # This file
+├── README.md            # This file
+├── DRIVE-SETUP.md       # Google Drive setup guide ✨ NEW
+└── GEMINI-SETUP.md      # Google Gemini setup guide
 ```
 
 ## Installation
@@ -201,6 +208,45 @@ async function summarizeWithLLM(pageContent) {
   });
   return response.json();
 }
+```
+
+### Google Drive Integration ✅
+
+Fetch files and folders from Google Drive for content analysis and processing.
+
+**Setup Guide:** See [DRIVE-SETUP.md](./DRIVE-SETUP.md) for detailed instructions.
+
+**Quick Start:**
+```bash
+# Add your Google API key to .env
+GOOGLE_API_KEY=your-api-key-here
+
+# Start the Drive server
+npm run start:drive
+
+# Test with the example folder
+npm run test:drive
+```
+
+**API Endpoints:**
+- `POST /api/drive/list-folder` - List files in a folder
+- `POST /api/drive/folder-info` - Get folder metadata
+- `POST /api/drive/download-file` - Download a file
+- `POST /api/drive/export-file` - Export Google Workspace files
+
+**Example Usage:**
+```javascript
+// List files in a Google Drive folder
+const response = await fetch('http://localhost:3001/api/drive/list-folder', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    folderUrl: 'https://drive.google.com/drive/folders/1LCLSDeydBgOlMvpm8gosBFyvoL1pwNNW'
+  })
+});
+
+const { files } = await response.json();
+console.log(`Found ${files.length} files`);
 ```
 
 ### Messaging App APIs (To Be Implemented)
